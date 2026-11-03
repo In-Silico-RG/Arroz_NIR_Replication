@@ -10,6 +10,9 @@ import numpy as np
 import pandas as pd
 
 AQUI = Path(__file__).resolve().parent
+import sys as _sys
+_sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parent))
+from rutas import DATOS, NBANDAS, RES, IMGDIR, FIG  # noqa: E402
 _spec = importlib.util.spec_from_file_location("v10", AQUI / "10_Validacion_UNF.py")
 v10 = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(v10)
@@ -24,7 +27,7 @@ def resumen_bandas(d):
 
 def _archivos(patron, suf):
     """res_*{suf}.xlsx de la variante: sin sufijo = datos completos."""
-    fs = sorted(AQUI.glob(patron))
+    fs = sorted(RES.glob(patron))
     if suf:
         return [f for f in fs if f.stem.endswith(suf)]
     return [f for f in fs if not f.stem.endswith(("_excl", "_relab"))]
@@ -38,12 +41,12 @@ def main(suf=""):
         for k in z.files:
             n, b = k.rsplit("_b", 1)
             cms[(int(b), n)] = z[k]
-    np.savez(AQUI / f"resultados_UNF_cm{suf}.npz", **{f"{n}_b{b}": c for (b, n), c in cms.items()})
+    np.savez(RES / f"resultados_UNF_cm{suf}.npz", **{f"{n}_b{b}": c for (b, n), c in cms.items()})
     resumen = (d12.groupby(["modelo", "b"])[["acc", "f1_macro", "acc_ovr_mean"]]
                .agg(["mean", "std"]).round(4))
     d3 = pd.concat([pd.read_excel(f) for f in _archivos("res_sfs_*.xlsx", suf)], ignore_index=True)
     df = pd.concat([pd.read_excel(f) for f in _archivos("res_fscnca_*.xlsx", suf)], ignore_index=True)
-    with pd.ExcelWriter(AQUI / f"resultados_UNF{suf}.xlsx") as w:
+    with pd.ExcelWriter(RES / f"resultados_UNF{suf}.xlsx") as w:
         resumen.to_excel(w, sheet_name="U1U2_resumen")
         d12.to_excel(w, sheet_name="U1U2_corridas", index=False)
         resumen_bandas(d3).to_excel(w, sheet_name="U3_resumen")

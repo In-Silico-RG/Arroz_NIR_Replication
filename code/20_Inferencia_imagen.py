@@ -8,12 +8,13 @@ Inferencia para el manuscrito v4 (2026-10-30), a partir de las salidas de
    intervalo de confianza del 95 % por bootstrap de imagenes; division aleatoria frente
    a una imagen fuera, en pares por imagen (Holm sobre 4). Evita tratar como
    independientes las 30 particiones, que reutilizan las mismas imagenes.
-2. Subconjuntos de 9 bandas de UNF frente a 30 subconjuntos de 9 bandas al azar por
-   particion (b = 100): diferencia media, fraccion de subconjuntos al azar superados,
+2. Subconjuntos seleccionados una vez con todos los espectros (21_Seleccion_todos.py,
+   res_subtodos_*.xlsx; v6, 2026-11-03, sustituye a los de MATLAB de UNF) frente a 30
+   subconjuntos al azar del mismo tamano por particion (b = 100): diferencia media, fraccion de subconjuntos al azar superados,
    t pareada y Wilcoxon sobre las 30 particiones (Holm sobre 12; las particiones no son
    independientes, se informa como descriptivo).
 
-Salida: resultados_UNF_v4_inferencia.xlsx
+Salida: resultados_inferencia.xlsx
 """
 from itertools import combinations
 from pathlib import Path
@@ -23,6 +24,9 @@ import pandas as pd
 from scipy import stats
 
 AQUI = Path(__file__).resolve().parent
+import sys as _sys
+_sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parent))
+from rutas import DATOS, NBANDAS, RES, IMGDIR, FIG  # noqa: E402
 MOD = ["SVM", "L-SVM", "LDA", "ANN"]
 B = 10000
 
@@ -46,7 +50,7 @@ def ic_boot(x, rng):
 
 def main():
     rng = np.random.default_rng(2026)
-    d = pd.concat([pd.read_excel(f) for f in sorted((AQUI / "mejoras").glob("res_img_*.xlsx"))])
+    d = pd.concat([pd.read_excel(f) for f in sorted(IMGDIR.glob("res_img_*.xlsx"))])
     img = d.groupby(["b", "modelo", "imagen"]).apply(
         lambda g: np.average(g.acc, weights=g.n), include_groups=False).rename("acc").reset_index()
     resumen = []
@@ -76,14 +80,16 @@ def main():
     caida = pd.DataFrame(caida)
     caida["p_holm"] = holm(caida.p_wilcoxon)
 
-    s = pd.concat([pd.read_excel(f) for f in sorted((AQUI / "mejoras").glob("res_sub9_*.xlsx"))])
+    # v6 (2026-11-03): subsets selected once on all spectra by the Python methods
+    # (21_Seleccion_todos.py); random subsets matched by size ("random<m>")
+    s = pd.concat([pd.read_excel(f) for f in sorted(RES.glob("res_subtodos_*.xlsx"))])
     sub = []
-    for (m, met), g in s[s.metodo != "random"].groupby(["modelo", "metodo"]):
-        az = s[(s.metodo == "random") & (s.modelo == m)]
+    for (m, met), g in s[~s.metodo.str.startswith("random")].groupby(["modelo", "metodo"]):
+        az = s[(s.metodo == f"random{int(g.m.iloc[0])}") & (s.modelo == m)]
         azm = az.groupby("split").acc.mean()
         gm = g.set_index("split").acc
         frac = np.mean([(gm[i] > az[az.split == i].acc).mean() for i in gm.index])
-        sub.append({"modelo": m, "metodo": met, "acc": 100 * gm.mean(), "sd": 100 * gm.std(),
+        sub.append({"modelo": m, "metodo": met, "m": int(g.m.iloc[0]), "acc": 100 * gm.mean(), "sd": 100 * gm.std(),
                     "azar": 100 * azm.mean(), "azar_q05": 100 * az.acc.quantile(0.05),
                     "azar_q95": 100 * az.acc.quantile(0.95), "dif": 100 * (gm - azm).mean(),
                     "frac_azar_superados": frac,
@@ -93,7 +99,7 @@ def main():
     sub["p_t_holm"] = holm(sub.p_t)
     sub["p_wilcoxon_holm"] = holm(sub.p_wilcoxon)
 
-    with pd.ExcelWriter(AQUI / "resultados_UNF_v4_inferencia.xlsx") as w:
+    with pd.ExcelWriter(RES / "resultados_inferencia.xlsx") as w:
         resumen.to_excel(w, sheet_name="por_imagen_resumen", index=False)
         pares.to_excel(w, sheet_name="clasificadores_imagen", index=False)
         caida.to_excel(w, sheet_name="aleatoria_vs_imagen", index=False)

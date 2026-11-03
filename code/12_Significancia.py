@@ -20,6 +20,9 @@ import pandas as pd
 from scipy import stats
 
 AQUI = Path(__file__).resolve().parent
+import sys as _sys
+_sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parent))
+from rutas import DATOS, NBANDAS, RES, IMGDIR, FIG  # noqa: E402
 import sys
 SUF = sys.argv[1] if len(sys.argv) > 1 else ""      # "", "_excl" o "_relab"
 
@@ -44,7 +47,7 @@ def pareado(a, b):
 
 
 def clasificadores():
-    d = pd.read_excel(AQUI / f"resultados_UNF{SUF}.xlsx", sheet_name="U1U2_corridas")
+    d = pd.read_excel(RES / f"resultados_UNF{SUF}.xlsx", sheet_name="U1U2_corridas")
     filas = []
     for b, g in d.groupby("b"):
         w = g.pivot(index="rep", columns="modelo", values="acc")
@@ -90,8 +93,11 @@ def bandas(d, metodo, nivel):
 def tabla3():
     """Tabla 3 recalculada: cada subconjunto de UNF contra el perfil completo, mismo
     modelo y mismas 30 particiones (b = 1 y b = 100)."""
-    t = pd.read_excel(AQUI / f"resultados_UNF_tabla3{SUF}.xlsx", sheet_name="corridas")
-    c = pd.read_excel(AQUI / f"resultados_UNF{SUF}.xlsx", sheet_name="U1U2_corridas")
+    f = RES / f"resultados_UNF_tabla3{SUF}.xlsx"     # v4 only (UNF's MATLAB subsets)
+    if not f.exists():
+        return pd.DataFrame()
+    t = pd.read_excel(f, sheet_name="corridas")
+    c = pd.read_excel(RES / f"resultados_UNF{SUF}.xlsx", sheet_name="U1U2_corridas")
     c = c[c.b.isin([1, 100])].assign(seleccion="None")   # perfil completo, mismas particiones
     t = pd.concat([t, c], ignore_index=True)
     filas = []
@@ -111,16 +117,16 @@ def tabla3():
 def main():
     r, u = clasificadores()
     t3 = tabla3()
-    hoja = AQUI / f"resultados_UNF{SUF}.xlsx"
+    hoja = RES / f"resultados_UNF{SUF}.xlsx"
     sfs = bandas(pd.read_excel(hoja, sheet_name="U3_corridas").query("k > 0"), "SFS", "k")
     fsc = bandas(pd.read_excel(hoja, sheet_name="U3_fscnca_corridas").query("k > 0"), "FSCNCA", "k")
     # CAFS: version v6 de UNF (14_CAFS_v6_baseline.py); nivel = caso (iterN o final)
-    v6 = bandas(pd.read_excel(AQUI / f"resultados_UNF_cafs_v6{SUF}.xlsx", sheet_name="corridas"),
+    v6 = bandas(pd.read_excel(RES / f"resultados_UNF_cafs_v6{SUF}.xlsx", sheet_name="corridas"),
                 "CAFS_v6", "caso")
     bt = pd.concat([sfs, fsc, v6], ignore_index=True)
     bt["p_wilcoxon_holm"] = holm(bt.p_wilcoxon)
     bt["p_t_holm"] = holm(bt.p_t)
-    with pd.ExcelWriter(AQUI / f"resultados_UNF_significancia{SUF}.xlsx") as w:
+    with pd.ExcelWriter(RES / f"resultados_UNF_significancia{SUF}.xlsx") as w:
         r.to_excel(w, sheet_name="clasificadores_pareado", index=False)
         u.to_excel(w, sheet_name="aleatoria_vs_b100", index=False)
         bt.to_excel(w, sheet_name="bandas_vs_azar", index=False)

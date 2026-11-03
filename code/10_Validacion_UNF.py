@@ -40,12 +40,13 @@ from sklearn.multiclass import OneVsOneClassifier
 from sklearn.svm import SVC, LinearSVC
 
 AQUI = Path(__file__).resolve().parent
+import sys as _sys
+_sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parent))
+from rutas import DATOS, NBANDAS, RES, IMGDIR, FIG  # noqa: E402
 RAIZ = AQUI.parent
-FIG = AQUI / "figuras"
-FIG.mkdir(exist_ok=True)
 
-X = loadmat(RAIZ / "X.mat")["X"].astype(float)
-Y = loadmat(RAIZ / "Y.mat")["Y"].ravel().astype(int)
+X = loadmat(DATOS / "X.mat")["X"].astype(float)
+Y = loadmat(DATOS / "Y.mat")["Y"].ravel().astype(int)
 
 # Analisis de sensibilidad (2026-10-30): tres imagenes (bloques de 100 filas) que con
 # validacion por imagen se clasifican enteras como otra variedad (Bellavista img 5 ->
@@ -119,6 +120,20 @@ def modelos():
                                            solver="lbfgs", max_iter=1000,
                                            random_state=0)),
     }
+
+
+def modelo(nombre, p):
+    """The same four models for a subset of p bands (the ANN hidden layer scales
+    with p: round(sqrt(p)) units)."""
+    if nombre == "SVM":
+        return make_pipeline(StandardScaler(), SVC(kernel="linear", C=1.0))
+    if nombre == "L-SVM":
+        return OneVsOneClassifier(LinearSVC(C=1.0, loss="hinge", dual=True, max_iter=1000))
+    if nombre == "LDA":
+        return LinearDiscriminantAnalysis()
+    return make_pipeline(StandardScaler(),
+                         MLPClassifier(hidden_layer_sizes=(int(round(np.sqrt(p))),),
+                                       solver="lbfgs", max_iter=1000, random_state=0))
 
 
 def metricas(y, yp):
@@ -392,7 +407,7 @@ def correr_fscnca():
          .agg(["mean", "std", lambda s: s.quantile(0.95)]).round(4))
     r.columns = ["mean", "std", "q95"]
     print(r)
-    with pd.ExcelWriter(AQUI / "resultados_UNF.xlsx", mode="a", engine="openpyxl",
+    with pd.ExcelWriter(RES / "resultados_UNF.xlsx", mode="a", engine="openpyxl",
                         if_sheet_exists="replace") as w:
         r.to_excel(w, sheet_name="U3_fscnca_resumen")
         d.to_excel(w, sheet_name="U3_fscnca_corridas", index=False)
@@ -407,14 +422,14 @@ def _modo_cluster(arg):
     if arg[0] == "u12":
       for b in map(int, arg[1:]):
         d12, cms = u1_u2([b])
-        d12.to_excel(AQUI / f"res_u12_b{b}{SUFIJO}.xlsx", index=False)
-        np.savez(AQUI / f"res_cm_b{b}{SUFIJO}.npz", **{f"{n}_b{bb}": c for (bb, n), c in cms.items()})
+        d12.to_excel(RES / f"res_u12_b{b}{SUFIJO}.xlsx", index=False)
+        np.savez(RES / f"res_cm_b{b}{SUFIJO}.npz", **{f"{n}_b{bb}": c for (bb, n), c in cms.items()})
     elif arg[0] == "sfs":
         a, c = int(arg[1]), int(arg[2])
-        u3(range(a, c)).to_excel(AQUI / f"res_sfs_{a}_{c}{SUFIJO}.xlsx", index=False)
+        u3(range(a, c)).to_excel(RES / f"res_sfs_{a}_{c}{SUFIJO}.xlsx", index=False)
     elif arg[0] == "fscnca":
         a, c = int(arg[1]), int(arg[2])
-        u3_fscnca(range(a, c)).to_excel(AQUI / f"res_fscnca_{a}_{c}{SUFIJO}.xlsx", index=False)
+        u3_fscnca(range(a, c)).to_excel(RES / f"res_fscnca_{a}_{c}{SUFIJO}.xlsx", index=False)
     print(f"total {time.time() - t0:.0f} s", flush=True)
 
 
@@ -427,7 +442,7 @@ elif __name__ == "__main__":
     t0 = time.time()
     print("U1+U2 ...", flush=True)
     d12, cms = u1_u2()
-    np.savez(AQUI / "resultados_UNF_cm.npz",
+    np.savez(RES / "resultados_UNF_cm.npz",
              **{f"{n}_b{b}": c for (b, n), c in cms.items()}, clases=CLASES)
     fig_cm(cms)
     print(f"  {time.time() - t0:.0f} s", flush=True)
@@ -440,7 +455,7 @@ elif __name__ == "__main__":
           .agg(["mean", "std", lambda s: s.quantile(0.95)]).round(4))
     r3.columns = ["mean", "std", "q95"]
     print(r3)
-    with pd.ExcelWriter(AQUI / "resultados_UNF.xlsx") as w:
+    with pd.ExcelWriter(RES / "resultados_UNF.xlsx") as w:
         resumen.to_excel(w, sheet_name="U1U2_resumen")
         d12.to_excel(w, sheet_name="U1U2_corridas", index=False)
         r3.to_excel(w, sheet_name="U3_resumen")

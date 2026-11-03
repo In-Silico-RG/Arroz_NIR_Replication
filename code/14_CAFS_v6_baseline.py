@@ -44,6 +44,9 @@ from sklearn.model_selection import StratifiedGroupKFold
 from sklearn.naive_bayes import GaussianNB
 
 AQUI = Path(__file__).resolve().parent
+import sys as _sys
+_sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parent))
+from rutas import DATOS, NBANDAS, RES, IMGDIR, FIG  # noqa: E402
 _spec = importlib.util.spec_from_file_location("v10", AQUI / "10_Validacion_UNF.py")
 v10 = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(v10)
@@ -153,7 +156,7 @@ def main():
                 accs = Parallel(n_jobs=-1)(
                     delayed(v10.evaluar_subconjunto)(list(c), tr, te, nombre) for c in azar)
                 filas += [{**base, "metodo": "random", "acc": a} for a in accs]
-        pd.DataFrame(filas).to_csv(AQUI / f"resultados_UNF_cafs_v6_parcial{v10.SUFIJO}.csv", index=False)
+        pd.DataFrame(filas).to_csv(RES / f"resultados_UNF_cafs_v6_parcial{v10.SUFIJO}.csv", index=False)
     d = pd.DataFrame(filas)
     r = (d.groupby(["modelo", "caso", "metodo"])
          .agg(m_medio=("m", "mean"), m_min=("m", "min"), m_max=("m", "max"),
@@ -161,7 +164,7 @@ def main():
               q05=("acc", lambda x: x.quantile(0.05)), q95=("acc", lambda x: x.quantile(0.95)))
          .round(4))
     print(r.to_string(), flush=True)
-    with pd.ExcelWriter(AQUI / f"resultados_UNF_cafs_v6{v10.SUFIJO}.xlsx") as w:
+    with pd.ExcelWriter(RES / f"resultados_UNF_cafs_v6{v10.SUFIJO}.xlsx") as w:
         r.to_excel(w, sheet_name="resumen")
         d.to_excel(w, sheet_name="corridas", index=False)
         pd.DataFrame(sel).to_excel(w, sheet_name="seleccion_final", index=False)
@@ -171,7 +174,7 @@ def main():
 
 def v10_nm(idx):
     from scipy.io import loadmat
-    nb = loadmat(AQUI.parent / "NUEVA_DATA_SEPT_2026" / "nBandas.mat")["nBandas"].ravel()
+    nb = loadmat(NBANDAS)["nBandas"].ravel()
     return nb[46:309][np.asarray(idx)]
 
 

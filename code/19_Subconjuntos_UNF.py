@@ -23,12 +23,20 @@ import pandas as pd
 from joblib import Parallel, delayed
 
 AQUI = Path(__file__).resolve().parent
+import sys as _sys
+_sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parent))
+from rutas import DATOS, NBANDAS, RES, IMGDIR, FIG  # noqa: E402
 _spec = importlib.util.spec_from_file_location("v10", AQUI / "10_Validacion_UNF.py")
 v = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(v)
-_spec = importlib.util.spec_from_file_location("t3", AQUI / "13_Tabla3_recalculada.py")
-t3 = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(t3)
+
+def _t3():
+    """v4 only: UNF's MATLAB subsets (13_Tabla3_recalculada.NM). Replaced in v6 by
+    21_Seleccion_todos.py; the 'sub' mode is kept for the record, not used in the paper."""
+    s = importlib.util.spec_from_file_location("t3", AQUI / "13_Tabla3_recalculada.py")
+    m = importlib.util.module_from_spec(s)
+    s.loader.exec_module(m)
+    return m
 
 MODELOS = ("SVM", "L-SVM", "LDA", "ANN")
 N_AZAR = 30
@@ -37,6 +45,7 @@ IMG = v.grupos(100)
 
 def sub_split(i):
     warnings.filterwarnings("ignore")
+    t3 = _t3()
     tr, te = v.particion(100, i)
     rng = np.random.default_rng(95000 + i)
     azar = [np.sort(rng.choice(v.X.shape[1], 9, replace=False)) for _ in range(N_AZAR)]
@@ -72,12 +81,12 @@ def main(arg):
     if modo == "sub":
         out = Parallel(n_jobs=-1)(delayed(sub_split)(i) for i in range(a, c))
         d = pd.DataFrame([f for o in out for f in o])
-        d.to_excel(AQUI / f"res_sub9_{a}_{c}.xlsx", index=False)
+        d.to_excel(RES / f"res_sub9_{a}_{c}.xlsx", index=False)
         print((d.groupby(["modelo", "metodo"]).acc.mean() * 100).round(2).unstack().to_string())
     else:
         out = Parallel(n_jobs=-1)(delayed(img_split)(b, i) for b in (1, 100) for i in range(a, c))
         d = pd.DataFrame([f for o in out for f in o])
-        d.to_excel(AQUI / f"res_img_{a}_{c}.xlsx", index=False)
+        d.to_excel(IMGDIR / f"res_img_{a}_{c}.xlsx", index=False)
         print((d.groupby(["b", "modelo"]).acc.mean() * 100).round(2).to_string())
     print(f"total {time.time() - t0:.0f} s", flush=True)
 
