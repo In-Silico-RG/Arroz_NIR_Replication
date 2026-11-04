@@ -108,8 +108,6 @@ Food fraud detection \sep  Grouped validation \sep  Rice authentication \sep NIR
 % ================================================================================================
 
 \section{Introduction}\label{sec1}
-%\acnote{On the title: the results say that the validation design and the metric change the reported accuracy substantially and that band selection performs close to randomly drawn subsets. ``Impact of Variable Selection Methods'' still fits if the conclusion is stated as the absence of a consistent impact; an alternative would be ``Rice variety discrimination by NIR hyperspectral imaging: validation design, accuracy metric and variable selection''. Your decision.}
-%\acnote{Version v4: your \texttt{Manuscript\_v2.tex} with five changes, needed for the results to hold: (1) overall accuracy (your Equation~3) instead of the mean per-class one-vs-rest accuracy; (2) a true LDA added, with your \texttt{templateLinear} model kept under its proper name (L-SVM, a linear SVM on unstandardised bands) and fitted to convergence; (3) band selection fitted on the training part of each split only; (4) validation with whole images held out as well as with grains divided at random; (5) each selected band subset compared against randomly drawn subsets of the same size. Our additions are in blue and our notes for you in red. Further analyses we did on these data (acquisition drift, row structure, image relabelling, improvement of the classifiers) are left for a separate paper.}
 
 % 1) Reice global importance nutritional and economic; compositional variation due to variety 
 Rice (Oryza sativa L.) is the staple food of more than half the world's population, providing approximately 20~\% of the daily caloric intake of more than 3.5 billion people \cite{subbuthavamurugan2023}; it is of particular relevance in Asian countries such as China, India, Thailand, and Indonesia \cite{Muthayya2014}. 
@@ -162,7 +160,6 @@ This chronological progression underscores the consolidation of spectroscopy and
     \end{tabular}
     }
     
- %   \acnote{We removed the Hu et al.\ (2026) row: it is a genomic phenotyping study reporting $R^2$, not a varietal classification, and its DOI is not registered in Crossref (checked 2026-10-30); the column now holds accuracies only. Please confirm the number of varieties for Tong et al.\ (2021), whose title concerns the variety and origin of Wuyou No.~4 rice: 76 may be the number of samples.}
     
 \end{table}
 
@@ -282,7 +279,6 @@ The classifiers were built and validated by five-fold cross-validation repeated 
     This model, see Figure~\ref{fig_models}a, seeks a linear combination of variables that provides discrimination between classes \cite{Rahmani2022}.
     \added{It was fitted as a single multiclass model with a pooled covariance matrix (scikit-learn \texttt{LinearDiscriminantAnalysis}).}
     \item [\added{b}] \added{Linear SVM on unstandardised bands (L-SVM): one-vs-one binary linear SVMs with hinge loss and $C=1$ (scikit-learn \texttt{LinearSVC} in a \texttt{OneVsOneClassifier}), fitted to convergence. It differs from the SVM below mainly in the absence of standardisation.}
-    \acnote{Item [b] is the model labelled LDA in your analysis (\texttt{fitcecoc} + \texttt{templateLinear}), now under its proper name; the true LDA is item [a]. With its defaults (SVM learner, ridge, $\lambda=1/n$, dual solver, no standardisation) it gives 90.2\% when fitted to convergence and 71.2\% when stopped after about 20 passes, which reproduces the 71.7\% implied by your Table~3. Python equivalents of all four models are now in the text (Section~2, first paragraph). Script \texttt{10\_Validacion\_UNF.py} in the public repository; the 71.2\% check was made with \texttt{13\_Tabla3\_recalculada.py}, kept in our records.}
     \item [\added{c}] Support Vector Machine (SVM).
     This model constructs an optimal separation hyperplane between classes and the decision boundary which is determined by maximizing the margin between the hyperplane and the closest samples, known as support vectors (Figure~\ref{fig_models}b). 
     In addition, kernel functions can be used to address nonlinear classification problems \cite{Onmarkhong2022, castro2019}.
@@ -323,7 +319,6 @@ Three alternative feature selection strategies were implemented to identify the 
     CAFS uses the subset of experiments defined by the covering array to explore the feature space and identify the features that maximize a predictive-performance criterion, such as the F1 score.
     This enables the exploration of relevant feature interactions with substantially fewer combinations than an exhaustive search.
     The implementation is based on previously reported work by \citet{Castro2022cafs}, and uses a Gaussian naive Bayes classifier scored by macro-F1 in an inner 5-fold cross-validation \added{(folds formed from blocks of 10 consecutive grains, as for SFS)}. \added{It was ported line by line to Python from the MATLAB code of \citet{Castro2022cafs} (binary covering arrays of strength 2; our generator reproduces theirs exactly). At each iteration the current band set is split according to the rows of the covering array, the best-scoring row becomes the new set, and the best subset over all iterations is returned; CAFS therefore sets its own subset size.}
-    %\acnote{The draft cited this method to an unrelated, unidentifiable "Avila (2024)" work. Covering Array Feature Selection (CAFS) paired with a naive Bayes classifier was introduced by Castro, De-la-Torre, Avila-George, Torres-Jimenez, Guivin and Acevedo-Ju\'arez (2022), \emph{Spectrochimica Acta Part A}, vol.~270, art.~120815, DOI~10.1016/j.saa.2021.120815 -- note that Wilson Castro, a co-author of this manuscript, is the first author of that paper, and Himer Avila-George is a co-author, not the lead author; neither the year nor the attribution in the original placeholder was correct. A 2024 follow-up by Tirado-Kulieva, Quijano-Jara, Avila-George and Castro applies CAFS to coffee fermentation, but that study optimises a PLSR model, not a naive Bayes classifier, so it is not the source of the method described here. The citation above has been corrected accordingly.}
     The algorithm was configured with the following options: 
     \begin{itemize}
         \item  Patience parameter (Patience = 3)
@@ -408,7 +403,6 @@ The broad characteristic between approximately 1250 and 1340 nm should be interp
 The pronounced decrease in reflectance around 1400–1450 nm corresponds to the first overtone of OH stretching and has been associated with the OH groups of water, starch and amylose in rice \cite{Onmarkhong2022}.
 At longer wavelengths, the characteristic around 1580 nm has been associated with O-H stretching involving intermolecular hydrogen bonding in starch and glucose \cite{Onmarkhong2022}.
 Therefore, the spectral differences between the twelve varieties are mainly consistent with variations in starch matrix, amylose-related composition, moisture, and molecular interactions.
-\acnote{Rewritten after an external review (2026-10-30): the profiles are reflectance (your MATLAB plots label them ``Normalized reflectance''), so absorption bands are the minima. The previous text read the maxima near 1120 and 1300~nm as starch absorption peaks, which inverts the sign; the assignments now sit on the minimum near 1200~nm and on the falls into the O--H region. Your 1202~nm CH$_3$ assignment \citep{Onmarkhong2022} is now placed at that minimum, where it is sign-consistent. The general tables for pasture and \emph{Eucalyptus} were replaced by a standard compilation \citep{Workman2012}, and the closing sentence citing CAFS for the compositional relevance of wavebands was removed, since it does not bear on rice.}
 
 \subsection{Exploratory analysis}
 
@@ -446,7 +440,6 @@ Consequently, CAFS can retain variables from different spectral regions whose jo
 This behavior is consistent with the rationale for the selection of wavelengths based on covering-arrays reported by \citet{Castro2022cafs}, where combinations of NIR wavebands were used to preserve discriminative compositional information. 
 It is important to note that the selected wavelengths should not be interpreted as exclusive markers of individual compounds because the NIR bands are broad, overlapping, and highly correlated. 
 Instead, their selection indicates spectral regions whose combined CH and OH responses capture differences in starch, amylose, moisture, and the molecular environment of the samples.
-\acnote{Your version concluded that this convergence shows the selected variables ``are not randomly distributed across the spectrum'' and that their recurrence supports a link to composition. Section~\ref{sec_bands_results} tests that claim directly: the subsets chosen by all three methods perform about as well as randomly drawn subsets of the same size, so we did not keep those two sentences. The rest of your paragraph is kept.}
 
 
 \subsection{Classification}\label{sec_classification}
@@ -467,7 +460,6 @@ Instead, their selection indicates spectral regions whose combined CH and OH res
     \hline
     \end{tabular}
 \end{table*}
-\acnote{Computed on the GUANE cluster (SC3-UIS) with our script \texttt{10\_Validacion\_UNF.py}; results in \texttt{resultados\_UNF.xlsx}. This table replaces your Table~3: its SVM and ANN columns are your models recomputed as overall accuracy, its L-SVM column is your \texttt{templateLinear} model fitted to convergence, its LDA column a true LDA, and its second row is validation with images held out. Nine-band subsets are compared with random subsets in Table~\ref{tab:sub9} rather than with the full spectrum, and selection without leakage is evaluated in Section~\ref{sec_bands_results}. Under the random division our per-class values (99.53\% SVM, 99.51\% ANN) reproduce yours (99.55\%, 99.47\%).}
 
 \added{Figure~\ref{fig:cm} shows the confusion matrices, pooled over the 30 splits. The errors concentrate in a few pairs of varieties: with the SVM and the ANN under the random division, IR43 and La Esperanza are taken for each other in 7--8\% of cases, La Conquista for Mallares in 2--5\%, Tinajones and La Puntilla in 3--5\% and Pitipo and Amazonas in 1--2\%, and LDA and the L-SVM confuse the same pairs at about twice these rates (IR43 and La Esperanza 14--18\%). Other confusions involve whole images. Under the random division LDA and the L-SVM already assign about 20\% of Bellavista to La Uni\'on and 20\% of La Conquista to Mallares -- one image in each case -- whereas the SVM and the ANN, trained on other grains of the same images, do so for only 1--5\%; with the images held out, all four classifiers lose them, and Capirona is taken for La Puntilla in 14--20\% of cases, again one image (Section~\ref{sec_limitations}). This is the mechanism behind most of the lead of the SVM and the ANN under the random division.}
 
@@ -511,7 +503,6 @@ Instead, their selection indicates spectral regions whose combined CH and OH res
 \end{table*}
 \acnote{v6: subsets from \texttt{21\_Seleccion\_todos.py} (Python, once on all spectra), evaluated on GUANE (jobs 32634--32637, 2026-11-03); statistics with \texttt{20\_Inferencia\_imagen.py}, results in \texttt{resultados\_inferencia.xlsx}. With your MATLAB subsets (v4) SFS and FSCNCA beat random with every linear classifier and CAFS with none; the Python subsets give the same picture for SFS, a weaker one for FSCNCA, and a mixed one for CAFS.}
 
-\acnote{Significance tests computed with our script \texttt{12\_Significancia.py} (Python, SciPy) on the per-split results of \texttt{10\_Validacion\_UNF.py} and \texttt{14\_CAFS\_v6\_baseline.py}, run on the GUANE cluster; full tables in \texttt{resultados\_UNF\_significancia.xlsx}. CAFS iterations reached by fewer than 9 of the 10 splits were excluded from the tests and from Table~\ref{tab:bands_cafs}.}
 
 
 \begin{table*}[htbp!]
@@ -594,7 +585,6 @@ Each variety is a single lot imaged in one session, so variety is confounded wit
 % ================================================================================================
 \added{\section*{Declaration of generative AI and AI-assisted technologies}
 During the preparation of this work the authors used Claude Code (Anthropic, Claude Opus 5.5 model) to write and run the analysis code and statistics and to draft parts of the text. The authors reviewed and edited all content, verified every reported result and reference, and take full responsibility for the content of the published article. Code and a dated record of the analysis are available at \texttt{https://github.com/\allowbreak In-Silico-RG/\allowbreak Arroz\_NIR\_Replication}.}
-\acnote{Elsevier requires this declaration. The repository above is public and holds the code, the data and the intermediate results.}
 
 %% BIBLIOGRAPHY
 % ================================================================================================
