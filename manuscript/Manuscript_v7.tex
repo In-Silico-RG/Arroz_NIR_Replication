@@ -223,9 +223,9 @@ Raw hyperspectral data often contain noise due to instrumental and environmental
         y_{i,j} = \sum_{k=-m}^{m} c_{k}\, x_{i,\,j+k}
         \label{eq_01}        
     \end{equation}
-    where $y_{i,j}$ is the smoothed value of the sample $i$ at the wavelength index $j$; $x_{i,\,j+k}$ is the original value of the signal; $c_{k}$ are the SG convolution coefficients determined by the degree of the polynomial $p$ and the order of the derivative $d$; $m = (w-1)/2$ is the half-width of the window; and $w$ is the total length of the window (an odd number of points), which corresponds to $w = 2m + 1$. The values used were $w=$ [PENDIENTE], $p=$ [PENDIENTE] and $d=$ [PENDIENTE].
+    where $y_{i,j}$ is the smoothed value of the sample $i$ at the wavelength index $j$; $x_{i,\,j+k}$ is the original value of the signal; $c_{k}$ are the SG convolution coefficients determined by the degree of the polynomial $p$ and the order of the derivative $d$; $m = (w-1)/2$ is the half-width of the window; and $w$ is the total length of the window (an odd number of points), which corresponds to $w = 2m + 1$. A window of $w=11$ points, polynomial degree $p=2$ and $d=0$ (smoothing only) were used, applied to the full 336-band profile.
 
-    \item \textbf{Normalization.} The Z-score normalization method was applied to the profiles, scaling the data points so that they have a mean $(\mu)$ of 0 and a standard deviation ($\sigma$) of 1, see Equation~\ref{eq_02}.
+    \item \textbf{Normalization.} The Z-score normalization method was applied to the profiles, scaling the data points so that they have a mean $(\mu)$ of 0 and a standard deviation ($\sigma$) of 1 over the full 336-band profile, before the 263 analyzed bands were taken, see Equation~\ref{eq_02}.
     \begin{equation}
         X_{Norm} = \frac{X-\mu}{\sigma}
         \label{eq_02}
