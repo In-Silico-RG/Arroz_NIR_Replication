@@ -431,7 +431,6 @@ Thus, PCA summarizes the combined variations across the NIR spectrum rather than
     \label{fig_04}
 \end{figure*}
 
-\acnote{v6: these are the bands selected by our Python implementations (Section~\ref{sec_feature_selection}) run once on all spectra, as your MATLAB routines were, so that every result in the paper comes from one code base. SFS reproduces most of your MATLAB SFS bands (1033, 1102, $\sim$1125, 1151 and 1649~nm); FSCNCA and CAFS differ, as expected from a different optimiser and different random folds. CAFS returned nine bands on its own (137, 81, 40, 25, 13, 9 over six iterations).}
 \added{Figure~\ref{fig_04} marks the bands selected by each method as vertical lines on the mean-profile background of Figure~\ref{fig_02}. FSCNCA: 1031, 1033, 1038, 1114, 1116, 1170, 1543, 1566 and 1641~nm. SFS: 1033, 1102, 1116, 1126, 1151, 1244, 1385, 1430 and 1649~nm. CAFS: 1050, 1068, 1138, 1141, 1425, 1435, 1626, 1644 and 1649~nm. All three methods place two to four bands on the rising edge and maximum between 1100 and 1150~nm, and one near the upper end of the range (1641--1649~nm). SFS and CAFS each place two bands in the fall into the O--H region (1385--1435~nm), where FSCNCA places none, choosing instead three bands near 1035~nm and two on the plateau at 1543--1566~nm. Only three wavelengths are shared exactly by two methods (1033 and 1116~nm by FSCNCA and SFS, 1649~nm by SFS and CAFS). That three reasonable methods agree so little on which bands matter, while reaching comparable accuracy (77--84\% with the SVM with one image per variety held out, Table~\ref{tab:sub9}), is itself informative about how redundant the bands are; Section~\ref{sec_bands_results} tests this directly against randomly drawn subsets.}
 This \added{last} region is particularly relevant because absorption near 1450 nm is associated with the first overtone of O–H stretching and contributions from water, starch, and hydroxyl groups of amylose \cite{Onmarkhong2022}.
 The differences among the selected subsets reflect the distinct search strategies of the algorithms. 
@@ -501,7 +500,6 @@ Instead, their selection indicates spectral regions whose combined CH and OH res
     \hline
     \end{tabular}
 \end{table*}
-\acnote{v6: subsets from \texttt{21\_Seleccion\_todos.py} (Python, once on all spectra), evaluated on GUANE (jobs 32634--32637, 2026-11-03); statistics with \texttt{20\_Inferencia\_imagen.py}, results in \texttt{resultados\_inferencia.xlsx}. With your MATLAB subsets (v4) SFS and FSCNCA beat random with every linear classifier and CAFS with none; the Python subsets give the same picture for SFS, a weaker one for FSCNCA, and a mixed one for CAFS.}
 
 
 
@@ -557,7 +555,6 @@ Instead, their selection indicates spectral regions whose combined CH and OH res
     \label{fig:bands_unf}
 \end{figure*}
 
-\acnote{How these three baselines were computed, so that you can check them against your MATLAB code (all in Python 3.14, scikit-learn 1.9, scripts in the \texttt{code/} folder of the public repository). \textbf{SFS}: our own implementation in \texttt{10\_Validacion\_UNF.py}, forward selection with an LDA criterion scored by grouped 5-fold CV. \textbf{FSCNCA}: MATLAB's \texttt{fscnca} has no Python equivalent, so we wrote feature-weighted NCA following Yang, Wang and Zuo (2012), also in \texttt{10\_Validacion\_UNF.py}: L1 distance with squared weights, kernel width $\sigma=1$, $\lambda=1/n$, weights initialised at 1, optimised with Adam (learning rate 0.02, 150 iterations) on a subsample of 100 training rows per variety; bands ranked by weight. Your threshold sweep (1--6 in steps of 0.5; fixed at 3.6 in the reported run) was replaced by taking the top $k$. \textbf{CAFS}: a line-by-line port of your \texttt{cafs\_matlab\_classification\_v6.m} (functions \texttt{cafs\_inner\_selection\_v2}, \texttt{compute\_selection\_score}, \texttt{generate\_CA\_2\_k\_2}) in \texttt{14\_CAFS\_v6\_baseline.py}, with the options of \texttt{b\_AnalizarPerfilesArroz\_2.m}: SNV, Gaussian naive Bayes, Patience = 3, MinImprovement = $10^{-4}$, MinFeatures = 10, MaxIterations = 50, TargetFeatures = 20, CompactnessPenalty = 0.10, ExcessPenaltyPower = 2, AdaptivePenaltyAlpha = 2. Our covering-array generator reproduces your \texttt{coveringArray\_last\_generated.csv} exactly. Two differences: the inner 5-fold cross-validation is stratified and grouped over blocks of 10 rows (StratifiedGroupKFold) rather than \texttt{cvpartition}, so that selection does not use grains of the same acquisition block for fitting and scoring, as in the other baselines; and there is no hyperparameter search for a final naive Bayes model, because each subset is evaluated with the SVM and LDA. An earlier baseline built from the PyPI package \texttt{cafspy} 0.0.1 (\texttt{11\_CAFS\_baseline.py}, before we had your code) is superseded and kept only in our records.}
 
 
 
@@ -574,7 +571,6 @@ The features that differ most between the mean profiles are the C--H second-over
 
 \subsection{Limitations}\label{sec_limitations}
 Each variety is a single lot imaged in one session, so variety is confounded with lot and acquisition time. The confused pairs have consecutive codes, which suggests that the varieties were imaged in that order and that slow changes in the instrument contribute to the similarity of neighbouring varieties. Three of the 60 images -- image~5 of Bellavista, image~1 of La Conquista and image~5 of Capirona -- are classified almost entirely as La Uni\'on, Mallares and La Puntilla when held out, which points to a labelling or sample slip that only the acquisition records can confirm; they are kept here with their labels as received. They are the extreme cases of a wider image effect: three more images (image~1 of Amazonas, image~1 of La Esperanza and image~3 of Tinajones) have fewer than two thirds of their grains classified correctly by every classifier. Finally, the grouping into images of 100 grains follows the acquisition protocol and has not been checked against image identifiers.}
-\acnote{Please check the three images (consecutive blocks of 100 rows per variety in the shared matrix) and confirm that the 500 rows of each variety are five images of 100 grains in acquisition order.}
 
 \section{Conclusion}
 
