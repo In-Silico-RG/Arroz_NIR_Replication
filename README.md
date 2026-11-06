@@ -1,14 +1,16 @@
-# Rice NIR classification — replication package (Manuscript v6)
+# Rice NIR classification — replication package (Manuscript v7)
 
 Code, data and intermediate results that reproduce every number, table and data
-figure in `manuscript/Manuscript_v6.tex`: *Rice variety discrimination by NIR
+figure in `manuscript/Manuscript_v7.tex`: *Rice variety discrimination by NIR
 hyperspectral imaging: validation design, accuracy metric and variable selection*.
 
 Everything downstream of the pre-treated profile matrix is in Python. Image
 acquisition, grain segmentation, profile extraction and pre-treatment
 (Savitzky-Golay smoothing and z-score normalisation of each profile) were done at
 Universidad Nacional de Frontera (UNF) before the data were shared; the matrix
-in `data/` is already pre-treated.
+in `data/` is already pre-treated. The Savitzky-Golay parameters (window 11,
+order 2, no derivative) and the z-score over all 336 bands were recovered from
+the pre-treated matrix itself by `code/23_SG_parametros.py`.
 
 ## Data
 
@@ -16,11 +18,12 @@ in `data/` is already pre-treated.
 |---|---|
 | `data/X.mat` | 6000 × 263 pre-treated reflectance profiles (camera bands 47–309, 999–1649 nm) |
 | `data/Y.mat` | 6000 class labels, integers 11–22 (12 varieties × 500 grains) |
+| `data/profile_totales.mat` | full pre-treated matrix as delivered by UNF: 6000 × 336 bands + label column; `X.mat` = its columns 47–309 |
 | `data/nBandas.mat` | wavelength (nm) of the camera's 336 bands; the analysis uses entries 47–309 |
 | `data/DATA_ARROZ.xlsx` | same profiles and labels, spreadsheet format |
 
-Sensor: Resonon Pika NIR-640. Within each variety the rows are taken to be five
-images of 100 grains in acquisition order; the image is the unit of the grouped
+Sensor: Resonon Pika NIR-640. Within each variety the rows are five images of
+100 grains in acquisition order; the image is the unit of the grouped
 validation. Data supplied by Wilson Castro Silupu (UNF); cite him as the data
 source.
 
@@ -40,12 +43,13 @@ resolved by `code/rutas.py` (inputs from `data/`, intermediate files in
 | `12_Significancia.py` | split-level tests (paired t, Wilcoxon, Holm) for the band baselines | Tables 4–5 |
 | `20_Inferencia_imagen.py` | image-level Wilcoxon tests and bootstrap intervals; Table 3 statistics | Section 3.4, Table 3 |
 | `22_Figuras_datos.py` | mean profiles, PCA, bands selected on all spectra | Figs. 4–6 |
+| `23_SG_parametros.py` | Savitzky-Golay window/order and z-score recovered from `profile_totales.mat` | Section 2.2.2 (pre-treatment) |
 
-Order: 10, 14, 21 (`sel`, then `sub`) and 19 (`img`) → 17 → 12, 20 → 22.
+Order: 10, 14, 21 (`sel`, then `sub`) and 19 (`img`) → 17 → 12, 20 → 22. 23 is independent.
 
 10, 14, 19 and 21 are the heavy steps (tens of CPU-hours, mostly the
 random-subset controls); they were run on the GUANE cluster (SC3-UIS) through
-their command-line modes, one job per range of splits. 12, 17, 20 and 22 take
+their command-line modes, one job per range of splits. 12, 17, 20, 22 and 23 take
 seconds to a minute on a laptop from the files already in `results/`.
 
 ## Results
@@ -57,13 +61,14 @@ bands selected on all spectra.
 
 ## Manuscript
 
-`manuscript/Manuscript_v6.tex` (Elsevier `elsarticle`) with `references2.bib` and
-`Figures/`. Compile:
+`manuscript/Manuscript_v7.tex` (Elsevier `elsarticle`) with `references2.bib` and
+`Figures/`; `Highlights_v7.txt` is the highlights file. Earlier versions are in the
+git history. Compile:
 
 ```
 cd manuscript
-pdflatex -interaction=nonstopmode Manuscript_v6 && bibtex Manuscript_v6
-pdflatex -interaction=nonstopmode Manuscript_v6 && pdflatex -interaction=nonstopmode Manuscript_v6
+pdflatex -interaction=nonstopmode Manuscript_v7 && bibtex Manuscript_v7
+pdflatex -interaction=nonstopmode Manuscript_v7 && pdflatex -interaction=nonstopmode Manuscript_v7
 ```
 
 ## Dependencies
