@@ -44,12 +44,13 @@ resolved by `code/rutas.py` (inputs from `data/`, intermediate files in
 | `20_Inferencia_imagen.py` | image-level Wilcoxon tests and bootstrap intervals; Table 3 statistics | Section 3.4, Table 3 |
 | `22_Figuras_datos.py` | mean profiles, PCA, bands selected on all spectra | Figs. 4–6 |
 | `23_SG_parametros.py` | Savitzky-Golay window/order and z-score recovered from `profile_totales.mat` | Section 2.2.2 (pre-treatment) |
+| `24_Figuras_esquemas.py` | schematic figures: LDA, SVM and ANN diagrams; confusion-matrix structure (TP, FN, FP, TN) | Figs. 2–3 |
 
-Order: 10, 14, 21 (`sel`, then `sub`) and 19 (`img`) → 17 → 12, 20 → 22. 23 is independent.
+Order: 10, 14, 21 (`sel`, then `sub`) and 19 (`img`) → 17 → 12, 20 → 22. 23 and 24 are independent.
 
 10, 14, 19 and 21 are the heavy steps (tens of CPU-hours, mostly the
 random-subset controls); they were run on the GUANE cluster (SC3-UIS) through
-their command-line modes, one job per range of splits. 12, 17, 20, 22 and 23 take
+their command-line modes, one job per range of splits. 12, 17, 20, 22, 23 and 24 take
 seconds to a minute on a laptop from the files already in `results/`.
 
 ## Results
