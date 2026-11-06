@@ -167,7 +167,7 @@ Figure~\ref{fig_01} illustrates the main steps of the methodology used in this s
 
 \begin{figure*}[htbp!]
     \centering
-    \includegraphics[width=0.75\textwidth]{Figures/Fig_01.png}
+    \includegraphics[width=\textwidth]{Figures/fig_workflow.png}
     \caption{Workflow of the study}
     \label{fig_01}
 \end{figure*}
@@ -264,14 +264,12 @@ The classifiers were built and validated by five-fold cross-validation repeated 
     A feed-forward network with standardized inputs and a single ReLU hidden layer of \added{$\mathrm{round}(\sqrt{p})$} neurons, $p$ being the number of bands (16 for the full spectrum, 3 for nine bands), was trained with L-BFGS (scikit-learn \texttt{MLPClassifier}; at most 1000 iterations, L2 penalty $10^{-4}$).
 \end{itemize}
 
-\begin{figure}[htbp!]
+\begin{figure*}[htbp!]
     \centering
-    \subfloat[]{\includegraphics[width=0.85\columnwidth]{Figures/model_LDA.png}}\\ 
-    \subfloat[]{\includegraphics[width=0.85\columnwidth]{Figures/model_SVM.png}}\\
-    \subfloat[]{\includegraphics[width=0.85\columnwidth]{Figures/model_ANN.png}} 
+    \includegraphics[width=\textwidth]{Figures/fig_models.png}
     \caption{Schematic diagrams of the (a) LDA, (b) SVM and (c) ANN classifiers}
     \label{fig_models}
-\end{figure}
+\end{figure*}
 
 
 \subsubsection{Band selection}\label{sec_feature_selection}

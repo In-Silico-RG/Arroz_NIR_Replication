@@ -44,7 +44,7 @@ resolved by `code/rutas.py` (inputs from `data/`, intermediate files in
 | `20_Inferencia_imagen.py` | image-level Wilcoxon tests and bootstrap intervals; Table 3 statistics | Section 3.4, Table 3 |
 | `22_Figuras_datos.py` | mean profiles, PCA, bands selected on all spectra | Figs. 4–6 |
 | `23_SG_parametros.py` | Savitzky-Golay window/order and z-score recovered from `profile_totales.mat` | Section 2.2.2 (pre-treatment) |
-| `24_Figuras_esquemas.py` | schematic figures: LDA, SVM and ANN diagrams; confusion-matrix structure (TP, FN, FP, TN) | Figs. 2–3 |
+| `24_Figuras_esquemas.py` | schematic figures: workflow (with the UNF pictures in `figures/visio/`), LDA/SVM/ANN diagrams, confusion-matrix structure (TP, FN, FP, TN) | Figs. 1–3 |
 
 Order: 10, 14, 21 (`sel`, then `sub`) and 19 (`img`) → 17 → 12, 20 → 22. 23 and 24 are independent.
 
