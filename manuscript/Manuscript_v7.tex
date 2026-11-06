@@ -47,6 +47,8 @@
 
 \title{Rice variety discrimination by NIR hyperspectral imaging: validation design, accuracy metric and variable selection}
 
+\author[4,5]{Aldo F. Combariza}
+\ead{aldo.combariza@unisucre.edu.co}
 \author[1]{Himer Avila-George}
 \author[2]{Nicole Briceño}
 \ead{2019203003@unf.edu.pe}
@@ -54,8 +56,6 @@
 \ead{crisco@unf.edu.pe}
 \author[3]{Tony Chuquizuta}
 \ead{tchuquizuta@unach.edu.pe}
-\author[4,5]{Aldo F. Combariza}
-\ead{aldo.combariza@unisucre.edu.co}
 \author[6]{Wilson Castro\corref{cor1}}
 \ead{wcastro@unf.edu.pe}
 \cortext[cor1]{Corresponding author}
@@ -75,7 +75,10 @@
 
 %% Abstract
 \begin{abstract}
-Near-infrared hyperspectral imaging (NIR-HSI) is widely proposed for authenticating rice varieties, and published accuracies often exceed 95\%. We examine how far such figures depend on the validation design, the metric and band selection. Mean spectra of 500 grains of each of twelve Peruvian varieties (Resonon Pika NIR-640, 263 bands, 999--1649~nm) were classified with a linear support vector machine on standardized bands (SVM), a linear SVM on unstandardized bands (L-SVM), linear discriminant analysis (LDA) and a neural network (ANN), on the full spectrum and on bands selected by neighborhood component analysis (FSCNCA), sequential forward selection (SFS) and covering-array feature selection (CAFS). Classifiers were validated by five-fold cross-validation with grains assigned at random or with whole images held out, and each selected band subset was compared against randomly drawn subsets of the same size. The mean per-class one-vs-rest accuracy equals $1-2e/K$ for any confusion matrix ($e$ the overall error rate, $K$ the number of classes) and cannot fall below 83.3\% for twelve classes; 99.53\% for the SVM corresponds to 97.2\% overall. With grains divided at random, the SVM and the ANN reached 97\% overall accuracy and LDA and the L-SVM 90\%; with whole images held out, 88\%, 88\%, 87\% and 84\%. With selection fitted on training data only, SFS beat random subsets only with 5--10 bands (by about 4--9 points), and FSCNCA and CAFS never did. Reporting overall accuracy, validating on images not used for training and benchmarking band selection against random subsets would make accuracies comparable between studies.
+Near-infrared hyperspectral imaging (NIR-HSI) is widely proposed for authenticating rice varieties, and published accuracies often exceed 95\%. We examine how far such figures depend on the validation design, the metric and band selection. 
+Mean spectra of 500 grains of each of twelve Peruvian varieties (Resonon Pika NIR-640, 263 bands, 999--1649~nm) were classified with a linear support vector machine on standardized bands (SVM), a linear SVM on unstandardized bands (L-SVM), linear discriminant analysis (LDA) and a neural network (ANN), on the full spectrum and on bands selected by neighborhood component analysis (FSCNCA), sequential forward selection (SFS) and covering-array feature selection (CAFS). 
+Classifiers were validated by five-fold cross-validation with grains assigned at random or with whole images held out, and each selected band subset was compared against randomly drawn subsets of the same size. The mean per-class one-vs-rest accuracy equals $1-2e/K$ for any confusion matrix ($e$ the overall error rate, $K$ the number of classes) and cannot fall below 83.3\% for twelve classes; 99.53\% for the SVM corresponds to 97.2\% overall. With grains divided at random, the SVM and the ANN reached 97\% overall accuracy and LDA and the L-SVM 90\%; with whole images held out, 88\%, 88\%, 87\% and 84\%. 
+With selection fitted on training data only, SFS beat random subsets only with 5--10 bands (by about 4--9 points), and FSCNCA and CAFS never did. Reporting overall accuracy, validating on images not used for training and benchmarking band selection against random subsets would make accuracies comparable between studies.
 \end{abstract}
 
 %% Keywords
@@ -216,7 +219,7 @@ The mean profile of each grain, coded by variety, was stored in a spreadsheet.
 
 \subsubsection{Pre-treatment}
 
-Raw hyperspectral data often contain noise due to instrumental and environmental effects \citep{vasquez2018}; therefore, the following pre-treatment steps were applied to each profile during extraction, before any of the analyses below.
+Raw hyperspectral data often contain noise due to instrumental and environmental effects \citep{vasquez2018}; therefore, the following pre-treatment steps were applied to each profile during extraction, before any of the analyzes below.
 
 \begin{itemize}
     \item \textbf{Smoothing.} For noise reduction, the Savitzky--Golay (SG) filter was applied; this filter preserves the shape of the peaks and reduces high-frequency noise; see Equation~\ref{eq_01}.
@@ -547,11 +550,11 @@ Each variety is a single lot imaged in one session, so variety is confounded wit
     \hline
     Author & CON & DAT & FOR & FUN & INV & MET & PRO & RES & SOF & SUP & VAL & VIS & WOD & WRE \\
     \hline
+    Aldo F. Combariza & \checkmark & \checkmark & \checkmark &  &  & \checkmark &  & \checkmark & \checkmark &  & \checkmark & \checkmark & \checkmark & \checkmark \\
     Himer Avila-George &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
     Nicole Briceño &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
     Cecilia Risco &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
     Tony Chuquizuta &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-    Aldo F. Combariza & \checkmark & \checkmark & \checkmark &  &  & \checkmark &  & \checkmark & \checkmark &  & \checkmark & \checkmark & \checkmark & \checkmark \\
     Wilson Castro & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
     \hline
     \end{tabular}
@@ -565,13 +568,13 @@ The contributions of each author are given in Table~\ref{tab:credit}.
 The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
 
 \section*{Funding}
-This work was supported by [PENDIENTE: funder, programme and grant number] (W. Castro). [PENDIENTE: funding of the other authors, if any.] A.F. Combariza received no specific funding for this work.
+This work was supported by [PENDIENTE: funder, program, and grant number] (W. Castro); [PENDIENTE: funding of the other authors, if any.] A.F. Combariza received no specific funding for this work.
 
 \section*{Data availability}
-The pre-treated spectral matrix, the class labels, all analysis code and the intermediate results are available at \texttt{https://github.com/\allowbreak In-Silico-RG/\allowbreak Arroz\_NIR\_Replication}.
+The pre-treated spectral matrix, the class labels, all analysis codes and the intermediate results are available at \texttt{https://github.com/\allowbreak In-Silico-RG/\allowbreak Arroz\_NIR\_Replication}.
 
 \section*{Declaration of generative AI and AI-assisted technologies in the writing process}
-During the preparation of this work the authors used Claude Code (Anthropic) to write and run the analysis code and statistics and to draft parts of the text. After using this tool, the authors reviewed and edited the content as needed and take full responsibility for the content of the published article.
+During the preparation of this work, the authors used Claude Code (Anthropic) to write and run the analysis code and statistics and to draft parts of the text. After using this tool, the authors reviewed and edited the content as needed and assume full responsibility for the content of the published article.
 
 %% BIBLIOGRAPHY
 % ================================================================================================
