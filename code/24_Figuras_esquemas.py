@@ -179,13 +179,13 @@ def fig_workflow():
     L.flecha(x0 + 0.5, 2.98, x0 + 0.5, 2.79)
     L.flecha(xs + (x0 + w0 - xs) / 2, 2.98, xs + (x0 + w0 - xs) / 2, 2.79)
     L.flecha(x0 + w0 / 2, 2.55, x0 + w0 / 2, 2.38)
-    # division schematic: one variety = 5 images of 100 grains (drawn as 5 × 5 dots)
+    # division schematic: one variety = 5 groups of 100 spectra (drawn as 5 × 5 dots)
     L.caja(x0, 1.18, w0, 1.2, ec="0.5", lw=0.6)
     L.texto(x0 + w0 / 2, 2.26, "5-fold cross-validation × 6 (30 splits)", fs=6.5,
             ha="center", va="center", fontweight="bold")
     test_r = np.random.default_rng(3).random((5, 5, 5)) < 0.2
-    for k, (titulo, sub) in enumerate((("Random division", "test grains from every image"),
-                                       ("Grouped division", "one whole image held out"))):
+    for k, (titulo, sub) in enumerate((("Random division", "test spectra from every group"),
+                                       ("Grouped division", "one whole group held out"))):
         xb = x0 + 0.1 + k * 1.33
         L.texto(xb + 0.62, 2.08, titulo, fs=6.5, ha="center", va="center", fontweight="bold")
         for im in range(5):
@@ -197,7 +197,7 @@ def fig_workflow():
                     L.ax.plot(xi + 0.03 + c * 0.04, 1.6 + r * 0.068, "o", ms=1.6,
                               mec="none", color="#d62728" if t else "0.6")
         L.texto(xb + 0.62, 1.43, sub, fs=6, ha="center", va="center")
-    L.texto(x0 + 0.12, 1.27, "each block: one image of 100 grains",
+    L.texto(x0 + 0.12, 1.27, "each block: a group of 100 spectra",
             fs=5.5, va="center", color="0.3")
     L.ax.plot([x0 + 2.02], [1.27], "o", ms=2.2, mec="none", color="#d62728")
     L.texto(x0 + 2.07, 1.27, "test", fs=5.5, va="center", color="0.3")
@@ -211,7 +211,7 @@ def fig_workflow():
     a.imshow(cm, cmap="viridis", vmin=0, vmax=1)
     a.set_xticks([]); a.set_yticks([])
     L.caja(x0 + 0.8, 0.55, w0 - 0.8, 0.4, "Performance evaluation: confusion\n"
-                                          "matrix, accuracy, macro-F1,\nimage-level tests",
+                                          "matrix, accuracy, macro-F1,\ngroup-level tests",
            fs=6.2, fc=GRIS)
     L.guardar("fig_workflow.png")
 

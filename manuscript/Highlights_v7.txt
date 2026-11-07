@@ -1,7 +1,7 @@
 Highlights
 
 - Mean per-class one-vs-rest accuracy is 1-2e/K and stays above 83.3% for 12 classes
-- Holding out whole images drops SVM accuracy from 97% to 88% on 12 rice varieties
-- With images held out, SVM, ANN and LDA no longer differ
+- Holding out groups of spectra drops SVM accuracy from 97% to 88% (12 varieties)
+- With groups held out, SVM, ANN and LDA no longer differ
 - Only SFS beats random band subsets of equal size, and only with 5-10 bands
 - Band-selection results should be benchmarked against random subsets

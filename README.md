@@ -22,9 +22,9 @@ the pre-treated matrix itself by `code/23_SG_parametros.py`.
 | `data/nBandas.mat` | wavelength (nm) of the camera's 336 bands; the analysis uses entries 47–309 |
 | `data/DATA_ARROZ.xlsx` | same profiles and labels, spreadsheet format |
 
-Sensor: Resonon Pika NIR-640. Within each variety the rows are five images of
-100 grains in acquisition order; the image is the unit of the grouped
-validation. Data supplied by Wilson Castro Silupu (UNF); cite him as the data
+Sensor: Resonon Pika NIR-640. Within each variety the rows form five groups of
+100 spectra (one per image) in acquisition order; the group is the unit of the
+grouped validation. Data supplied by Wilson Castro Silupu (UNF); cite him as the data
 source.
 
 ## Code
@@ -35,13 +35,13 @@ resolved by `code/rutas.py` (inputs from `data/`, intermediate files in
 
 | Script | Produces | In the paper |
 |---|---|---|
-| `10_Validacion_UNF.py` | four classifiers on the full spectrum, random vs image-held-out division (5-fold CV × 6); training-only SFS and FSCNCA vs random subsets; confusion-matrix and band figures | Table 2, Fig. 7, Table 4, Fig. 8a–b |
+| `10_Validacion_UNF.py` | four classifiers on the full spectrum, random vs group-held-out division (5-fold CV × 6); training-only SFS and FSCNCA vs random subsets; confusion-matrix and band figures | Table 2, Fig. 7, Table 4, Fig. 8a–b |
 | `14_CAFS_v6_baseline.py` | training-only CAFS (line-by-line port of UNF's MATLAB CAFS v6) vs random subsets | Table 5, Fig. 8c |
 | `21_Seleccion_todos.py` | SFS, FSCNCA and CAFS fitted once on all spectra (`sel`); those subsets vs 30 random subsets of the same size on 30 splits, four classifiers (`sub A C`) | Fig. 6, Table 3 |
-| `19_Subconjuntos_UNF.py` | per-image accuracy of the four classifiers (`img A C`) | input to 20 |
+| `19_Subconjuntos_UNF.py` | per-group accuracy of the four classifiers (`img A C`) | input to 20 |
 | `17_Unir_resultados.py` | merges the per-job files of 10 into `resultados_UNF*.xlsx` | — |
 | `12_Significancia.py` | split-level tests (paired t, Wilcoxon, Holm) for the band baselines | Tables 4–5 |
-| `20_Inferencia_imagen.py` | image-level Wilcoxon tests and bootstrap intervals; Table 3 statistics | Section 3.4, Table 3 |
+| `20_Inferencia_imagen.py` | group-level Wilcoxon tests and bootstrap intervals; Table 3 statistics | Section 3.4, Table 3 |
 | `22_Figuras_datos.py` | mean profiles, PCA, bands selected on all spectra | Figs. 4–6 |
 | `23_SG_parametros.py` | Savitzky-Golay window/order and z-score recovered from `profile_totales.mat` | Section 2.2.2 (pre-treatment) |
 | `24_Figuras_esquemas.py` | schematic figures: workflow (with the UNF pictures in `figures/visio/`), LDA/SVM/ANN diagrams, confusion-matrix structure (TP, FN, FP, TN) | Figs. 1–3 |
@@ -56,7 +56,7 @@ seconds to a minute on a laptop from the files already in `results/`.
 ## Results
 
 `results/` holds every intermediate file the scripts read or write (`res_*`,
-`resultados_*`; per-image accuracies in `results/mejoras/`), so the tables can be
+`resultados_*`; per-group accuracies in `results/mejoras/`), so the tables can be
 checked without rerunning the heavy steps. `results/res_sel_todos.json` lists the
 bands selected on all spectra.
 
