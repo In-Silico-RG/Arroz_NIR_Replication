@@ -75,10 +75,15 @@
 
 %% Abstract
 \begin{abstract}
-Near-infrared hyperspectral imaging (NIR-HSI) is widely proposed for authenticating rice varieties, and published accuracies often exceed 95\%. We examine how far such figures depend on the validation design, the metric and band selection. 
-Mean spectra of 500 grains of each of twelve Peruvian varieties (Resonon Pika NIR-640, 263 bands, 999--1649~nm) were classified with a linear support vector machine on standardized bands (SVM), a linear SVM on unstandardized bands (L-SVM), linear discriminant analysis (LDA) and a neural network (ANN), on the full spectrum and on bands selected by neighborhood component analysis (FSCNCA), sequential forward selection (SFS) and covering-array feature selection (CAFS). 
-Classifiers were validated by five-fold cross-validation with grains assigned at random or with whole groups of spectra held out, and each selected band subset was compared against randomly drawn subsets of the same size. The mean per-class one-vs-rest accuracy equals $1-2e/K$ for any confusion matrix ($e$ the overall error rate, $K$ the number of classes) and cannot fall below 83.3\% for twelve classes; 99.53\% for the SVM corresponds to 97.2\% overall. With grains divided at random, the SVM and the ANN reached 97\% overall accuracy and LDA and the L-SVM 90\%; with whole groups held out, 88\%, 88\%, 87\% and 84\%. 
-With selection fitted on training data only, SFS beat random subsets only with 5--10 bands (by about 4--9 points), and FSCNCA and CAFS never did. Reporting overall accuracy, validating on groups not used for training and benchmarking band selection against random subsets would make accuracies comparable between studies.
+%Near-infrared hyperspectral imaging (NIR-HSI) is widely proposed for authenticating rice varieties, and published accuracies often exceed 95\%. 
+\textcolor{blue}{Near-infrared hyperspectral imaging (NIR-HSI) has been widely proposed for authenticating rice varieties, with reported accuracies often exceeding 95\%.}
+We examine how far such figures depend on the validation design, the metric, and band selection. 
+Mean spectra of 500 grains of each of twelve Peruvian varieties (Resonon Pika NIR-640, 263 bands, 999--1649~nm) were classified with a linear support vector machine on standardized bands (SVM), a linear SVM on unstandardized bands (L-SVM), linear discriminant analysis (LDA) and a neural network (ANN), on the full spectrum and on bands selected by neighborhood component analysis (FSCNCA), sequential forward selection (SFS) and covering array feature selection (CAFS). 
+Classifiers were validated by five-fold cross-validation with spectra assigned at random or with whole groups of spectra held out, and each selected band subset was compared with randomly drawn subsets of the same size. 
+The mean per-class one-vs-rest accuracy equals $1-2e/K$ for any confusion matrix ($e$ the total error rate, $K$ the number of classes) and cannot fall below 83.3\% for 12 classes; 99.53\% for the SVM corresponds to 97.2\% overall. 
+\textcolor{blue}{With spectra divided at random, the SVM and the ANN reached 97\% overall accuracy and LDA and the L-SVM 90\%; with whole groups held out, 88\%, 88\%, 87\% and 84\%.}
+With selection fitted to training data only, SFS beat random subsets only with 5--10 bands (by 4--9 points), and FSCNCA and CAFS never did.
+Reporting overall accuracy, validating on groups not used for training, and benchmarking band selection against random subsets would make accuracies comparable between studies.
 \end{abstract}
 
 %% Keywords
